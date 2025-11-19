@@ -30,8 +30,8 @@ To replicate the experiment, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
-    cd <your-repo-name>
+    git clone https://github.com/Macmilan24/LSTM_For_Attentional_Shift.git
+    cd LSTM_For_Attentional_Shift
     ```
 
 2.  **Set up a virtual environment and install dependencies:**
