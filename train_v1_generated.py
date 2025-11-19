@@ -9,12 +9,11 @@ from tensorflow.keras.utils import to_categorical
 
 
 words_data = {
-    "insect": ["Ant", "ant", "aphid", "aphids", "armyworm", "armyworms", "beetwebworm", "spider", "beanpodborer", "beanfly", "caterpillar", "locust", "grasshopper", "jassid"],
+    "cars": ["car", "engine", "wheel", "drive", "speed", "road", "vehicle", "motor", "tire", "highway"],
+    "insect": ["ant", "aphid", "caterpillar", "locust", "spider", "beetle", "armyworm", "beanfly", "grasshopper"],
     "poison": ["aconite", "aflatoxin", "alcohol", "ammonia", "arsenic", "aspirin", "azoxystrobi", "botulinum", "caffeine", "chlorine", "cocaine", "cyanide"],
     "insecticide": ["abamectin", "acetamiprid", "alachlor", "fosmethilan", "fenson", "ethion", "lindane", "fluvalinate", "hydramethylnon", "bendiocarb", "aldrin", "benazolin", "dichloropropene", "aldicarb", "diazinon", "dicofol", "dinoseb", "ethiofencarb", "methidathion", "trichlorophenol"],
-    "species": ["eusocialSpecies", "agriculturalPestSpecies", "nocturnalSpecies", "toxicPlantSpecies", "heavyMetalForm", "solventForm", "irritantClass", "fungalToxinSpecies"],
-    "disease": ["parasiticInfection", "envenomation", "plantVirusSyndrome", "yieldDeclineSyndrom", "leafBlight", "necroticLeafSyndrom", "poisoning", "liverCancer", "intoxication", "irritation"]
-}
+    }
 
 categories = list(words_data.keys())
 category_to_int = {category: i for i, category in enumerate(categories)}
@@ -64,10 +63,8 @@ model.fit(X_padded, y, epochs=20, batch_size=32, validation_split=0.2, verbose=2
 
 print("\n Saving the Trained Model")
 
-model.save('lstm_topic_model.keras')
+model.save('model_v1_generated.keras')
+with open('tokenizer_v1.json', 'w', encoding='utf-8') as f:
+    f.write(json.dumps(tokenizer.to_json(), ensure_ascii=False))
 
-tokenizer_json = tokenizer.to_json()
-with open('tokenizer.json', 'w', encoding='utf-8') as f:
-    f.write(json.dumps(tokenizer_json, ensure_ascii=False))
-
-print("\nTraining complete!")
+print("Model V1 training complete.")

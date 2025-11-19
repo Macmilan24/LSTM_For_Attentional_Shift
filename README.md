@@ -1,32 +1,34 @@
-# LSTM for Topic Prediction and Attentional Shift Simulation
+# Comparative Analysis of LSTM Models for Attentional Shift Simulation
 
 ## 1. Project Objective
 
-This project implements a simple Long Short-Term Memory (LSTM) network to perform topic classification on a stream of words. It is designed as a **neural network counterpart** to the symbolic ECAN "Shifting and Drifting Attention" experiment.
+This project explores the capabilities of Long Short-Term Memory (LSTM) networks in simulating cognitive attention, specifically **attentional shifting**. It serves as a neural network counterpart to symbolic attention systems like ECAN (Economic Attention Networks).
 
-The goal is to train a model to identify topics (like 'insect' and 'poison') and then test its ability to shift its focus when the topic of the input stream changes abruptly. This allows for a direct comparison between a symbolic and a neural approach to the focus allocation problem.
+The primary goal is to analyze how different training data methodologies affect an LSTM's ability to track and shift its focus between topics. We train three distinct models on different types of data and compare their performance on a standardized test, providing insights into the strengths and weaknesses of neural approaches to focus allocation.
 
-## 2. How It Works
+## 2. Project Structure & Methodology
 
-The project is divided into two main scripts:
+The project is structured around three training scripts and one final analysis script. Each training script produces a different version of the LSTM model.
 
-#### `train_lstm.py`
-This script is responsible for creating and training the model. It performs the following steps:
-1.  **Generates a synthetic dataset** from a predefined dictionary of words for five categories (insect, poison, insecticide, species, disease).
-2.  **Defines a simple Keras Sequential model** consisting of an `Embedding` layer, an `LSTM` layer, and a final `Dense` classification layer.
-3.  **Trains the model** on the generated data to learn the association between word sequences and topics.
-4.  **Saves the trained model** (`lstm_topic_model.keras`) and its tokenizer (`tokenizer.json`) for use in the next step.
+#### `train_v1_generated.py`
+*   **Method:** Trains a baseline model on synthetically generated, short sequences of words.
+*   **Purpose:** To test the model's performance when trained on simple, "pure" data without real-world context.
 
-#### `test_and_plot_lstm.py`
-This script loads the trained model and simulates the attentional shift experiment.
-1.  **Loads the saved `lstm_topic_model.keras`** and `tokenizer.json`.
-2.  **Feeds a predefined sequence of words** to the model one at a time. The sequence begins with 'insect' words and abruptly switches to 'poison' words.
-3.  **Records the model's topic predictions** (a set of probabilities) at each step.
-4.  **Generates a plot** (`lstm_attention_shift_plot.png`) visualizing how the topic probabilities change over time.
+#### `train_v2_sentences.py`
+*   **Method:** Trains a model on a dataset of realistic, full sentences for each topic.
+*   **Purpose:** To evaluate if training on contextual data improves the model's ability to understand and adapt to topic changes.
+
+#### `train_v3_words.py`
+*   **Method:** Trains a model on lists of isolated vocabulary words for each topic.
+*   **Purpose:** To test the model's performance when learning static `word -> topic` associations without any sequential context.
+
+#### `test_and_plot_all.py`
+*   **Method:** Loads all three trained models and runs a single, comprehensive test stream against each one.
+*   **Purpose:** To generate a final comparative plot that visualizes the performance of each model on the same attentional shift task, allowing for a direct comparison of their behaviors.
 
 ## 3. How to Run
 
-To replicate the experiment, follow these steps:
+Follow these steps to set up the environment and replicate the experiment.
 
 1.  **Clone the repository:**
     ```bash
@@ -34,7 +36,9 @@ To replicate the experiment, follow these steps:
     cd LSTM_For_Attentional_Shift
     ```
 
-2.  **Set up a virtual environment and install dependencies:**
+2.  **Set up the environment and install dependencies:**
+    *   Ensure your data is organized in a `data/` directory as specified in the project structure.
+    *   It is highly recommended to use a virtual environment.
     ```bash
     # Create and activate a virtual environment (optional but recommended)
     python -m venv venv
@@ -44,25 +48,29 @@ To replicate the experiment, follow these steps:
     pip install -r requirements.txt
     ```
 
-3.  **Train the model:**
-    Run the training script. This will create the `lstm_topic_model.keras` and `tokenizer.json` files.
+3.  **Train the three models:**
+    Run each training script sequentially. This will generate the necessary `.keras` and `.json` files for each model.
     ```bash
-    python train_lstm.py
+    python train_v1_generated.py
+    python train_v2_sentences.py
+    python train_v3_words.py
     ```
 
-4.  **Run the simulation and generate the plot:**
-    Run the testing script. This will use the trained model to generate the final plot.
+4.  **Run the final comparison:**
+    Execute the test script to evaluate all models and generate the comparative plot.
     ```bash
-    python test_and_plot_lstm.py
+    python test_and_plot_all.py
     ```
 
-## 4. Results
+## 4. Results and Analysis
 
-After running the simulation, the following plot is generated, showing the model's predicted topic probabilities at each time step.
+The final output is a single image (`final_comparison_plot.png`) containing three subplots, one for each model. This allows for a direct comparison of their performance on the attentional shift test.
 
-![LSTM Attentional Shift Plot](lstm_attention_shift_plot.png)
+![Final Comparison Plot](final_comparison_plot.png)
 
-### Analysis
-The plot shows that the LSTM correctly identifies the initial 'insect' topic with the highest probability. However, after the topic switches to 'poison', the model **fails to shift its dominant prediction**. The prediction probabilities flatline, with 'insect' remaining the most likely topic.
+### Summary of Findings:
+*   **Model V1 (Generated Data):** This baseline model fails to shift its attention. After locking onto the initial topic, its predictions flatline when the topic changes, showing an inability to adapt.
+*   **Model V2 (Sentence Data):** This model performs the best on the core task. It successfully shifts its attention between topics, demonstrating that training on contextual data is effective. However, it can show instability and difficulty returning to a previous context.
+*   **Model V3 (Word List Data):** This model learns strong initial associations but suffers from extreme "context inertia." It confidently identifies the first topic but then completely fails to adapt to any subsequent changes.
 
-This result highlights a key difference compared to the ECAN's symbolic, rule-based attention mechanism, providing a strong basis for comparing the two architectures.
+This comparative analysis demonstrates that the quality and context of training data are critically important for a neural network's ability to perform complex cognitive tasks like attentional shifting, highlighting a key difference from the explicit, rule-based reasoning of symbolic systems like ECAN.
